@@ -3,6 +3,7 @@ use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::ErrorKind;
+use convert_case::{Case, Casing};
 
 #[warn(dead_code)]
 fn get_file_serial(path: &str, prefix: &String) -> i32 {
@@ -37,8 +38,8 @@ fn get_file_serial(path: &str, prefix: &String) -> i32 {
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    // let folder = "src/main/resources/db/migration/default";
-    let folder = ".";
+    let folder = "src/main/resources/db/migration/default";
+    // let folder = ".";
 
     let current_date = Local::now().format("%Y.%m.%d.%H.%M.%S").to_string();
     // let file_prefix = format!("V{}", current_date);
@@ -46,7 +47,7 @@ fn main() {
     // let file_serial = format!("{:03}", get_file_serial(folder, &file_prefix));
 
     let filename = &args[1..].join("_");
-    let file_path = format!("{}/V{}__{}.{}", folder, current_date, filename, "sql");
+    let file_path = format!("{}/V{}__{}.{}", folder, current_date, filename.to_case(Case::Snake), "sql");
 
     match File::create(&file_path) {
         Ok(_) => println!("Created migration file: {}", file_path),
